@@ -1,11 +1,18 @@
 {
-  "name": "GameBoard",
+  "name": "gameboard",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:andy8radshaw/GameBoard.git",
   "author": "andy8radshaw <andy8radshaw@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon",
+    "seed": "node db/seeds.js"
+  },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.12.0",
+    "nodemon": "^2.0.7"
   }
 }

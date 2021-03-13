@@ -1,0 +1,11 @@
+{
+  "workbench.colorTheme": "Dracula Soft",
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#ffd23f",
+    "statusBar.foreground": "#000000",
+    "titleBar.activeBackground": "#ffd23f",
+    "titleBar.inactiveBackground": "#ffd23f",
+    "titleBar.activeForeground": "#000000"
+  },
+  "window.title": "GameBoard - BE",
+}
