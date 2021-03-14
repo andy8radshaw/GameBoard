@@ -3,6 +3,7 @@ const app = express()
 const mongoose = require('mongoose')
 const { port, dbURI } = require('./config/envionment')
 const logger = require('./lib/logger')
+const errorHandler = require('./lib/errorHandler')
 
 mongoose.connect(dbURI,
   {
@@ -14,5 +15,7 @@ mongoose.connect(dbURI,
   })
 
 app.use(logger)
+
+app.use(errorHandler)
 
 app.listen(port, () => console.log(`Up and running on port ${port}`))
