@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const { port, dbURI } = require('./config/envionment')
+const { port, dbURI } = require('./config/environment')
 const logger = require('./lib/logger')
+const router = require('./config/routes')
 const errorHandler = require('./lib/errorHandler')
 
 mongoose.connect(dbURI,
@@ -14,7 +15,11 @@ mongoose.connect(dbURI,
     console.log('Mongo is Connected!')
   })
 
+app.use(express.json())
+
 app.use(logger)
+
+app.use('/api', router)
 
 app.use(errorHandler)
 
