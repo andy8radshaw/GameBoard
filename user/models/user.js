@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
-const uniqueValidator = require('mongoose-unique-validator')
+import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'
+import uniqueValidator from 'mongoose-unique-validator'
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -48,4 +48,5 @@ userSchema
   })
 
 userSchema.plugin(uniqueValidator)
-module.exports = mongoose.model('User', userSchema)
+
+export default mongoose.model('User', userSchema)

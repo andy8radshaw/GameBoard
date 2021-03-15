@@ -1,7 +1,7 @@
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-const { secret } = require('../../config/environment')
-const { unauthorized } = require('../../lib/errorMessages')
+import User from '../models/user.js'
+import jwt from 'jsonwebtoken'
+import { secret } from '../../config/environment.js'
+import { unauthorized } from '../../lib/errorMessages.js'
 
 async function register(req, res) {
   try {
@@ -31,7 +31,7 @@ async function login(req, res) {
   }
 }
 
-module.exports = {
+export default {
   register,
   login
 }
