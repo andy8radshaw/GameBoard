@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const { secret } = require('../config/environment')
-const { unauthorized } = require('../lib/errorMessages')
+const { secret } = require('../../config/environment')
+const { unauthorized } = require('../../lib/errorMessages')
 
 async function register(req, res) {
   try {
