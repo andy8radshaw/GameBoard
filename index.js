@@ -1,26 +1,31 @@
-const express = require('express')
+import express from 'express'
+import { port } from './config/environment.js'
+import connectToDatabase from './lib/connectToDb.js'
+import logger from './lib/logger.js'
+import router from './config/routes.js'
+import errorHandler from './lib/errorHandler.js'
+
 const app = express()
-const mongoose = require('mongoose')
-const { port, dbURI } = require('./config/environment')
-const logger = require('./lib/logger')
-const router = require('./config/routes')
-const errorHandler = require('./lib/errorHandler')
 
-mongoose.connect(dbURI,
-  {
-    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
-  },
-  (err) => {
-    if (err) return console.log(err)
-    console.log('Mongo is Connected!')
-  })
+async function startServer() {
+  try {
+    await connectToDatabase()
 
-app.use(express.json())
+    console.log('🤖 Database has connected')
 
-app.use(logger)
+    app.use(express.json())
 
-app.use('/api', router)
+    app.use(logger)
 
-app.use(errorHandler)
+    app.use('/api', router)
 
-app.listen(port, () => console.log(`Up and running on port ${port}`))
+    app.use(errorHandler)
+
+    app.listen(port, () => console.log(`🤖 Up and running on port ${port}`))
+  } catch (err) {
+    console.log('🤖 Something went wrong starting the App')
+    console.log(err)
+  }
+}
+
+startServer()
