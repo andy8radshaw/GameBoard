@@ -11,8 +11,9 @@ const userSchema = new mongoose.Schema({
 userSchema
   .set('toJSON', {
     virtuals: true,
-    transform(doc, json) {
+    transform(_doc, json) {
       delete json.password
+      delete json.__v
       return json
     }
   })
