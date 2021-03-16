@@ -1,4 +1,10 @@
-function connect() {
+import mongoose from 'mongoose'
+import mockgoose from 'mockgoose'
+import { dbURI } from '../config/environment.js'
+
+const Mockgoose = mockgoose.Mockgoose
+
+function connectToMockDatabase() {
   return new Promise((resolve, reject) => {
     const mockDb = new Mockgoose(mongoose)
     const options = {
@@ -18,5 +24,11 @@ function connect() {
   })
 }
 
-function closeDatabase() {
+function closeMockDatabase() {
   return mongoose.disconnect()
+}
+
+export default {
+  connectToMockDatabase,
+  closeMockDatabase
+}
