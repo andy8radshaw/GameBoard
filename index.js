@@ -5,6 +5,7 @@ import logger from './lib/logger.js'
 import router from './config/routes.js'
 import errorHandler from './lib/errorHandler.js'
 
+
 const app = express()
 
 async function startServer() {
@@ -27,5 +28,6 @@ async function startServer() {
     console.log(err)
   }
 }
+
 
 startServer()

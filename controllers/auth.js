@@ -1,7 +1,7 @@
 import User from '../models/user.js'
 import jwt from 'jsonwebtoken'
-import { secret } from '../../config/environment.js'
-import { unauthorized } from '../../lib/errorMessages.js'
+import { secret } from '../config/environment.js'
+import { unauthorized } from '../lib/errorMessages.js'
 
 async function register(req, res) {
   try {
