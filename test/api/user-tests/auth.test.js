@@ -2,7 +2,7 @@
 import { expect } from 'chai'
 import request from 'supertest'
 import database from '../../testEnv.js'
-import register from '../../../controllers/auth.js'
+// import register from '../../../controllers/auth.js'
 import app from '../../../index.js'
 
 describe('Registering a User', () => {
