@@ -5,18 +5,21 @@ import logger from './lib/logger.js'
 import router from './config/routes.js'
 import errorHandler from './lib/errorHandler.js'
 
+const isTest = process.env.NODE_ENV === 'test'
+const databaseName = isTest ? 'Test database' : 'Database'
+
 
 const app = express()
 
 async function startServer() {
   try {
-    await connectToDatabase()
+    await connectToDatabase(isTest)
 
-    console.log('🤖 Database has connected')
+    if (!isTest) console.log(`🤖 ${databaseName} has connected`)
 
     app.use(express.json())
 
-    app.use(logger)
+    // if (!isTest) app.use(logger)
 
     app.use('/api', router)
 
@@ -28,7 +31,6 @@ async function startServer() {
     console.log(err)
   }
 }
-
 
 startServer()
 
