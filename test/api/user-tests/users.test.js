@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test'
-
 /* eslint-disable no-undef */
 import { expect } from 'chai'
 import request from 'supertest'

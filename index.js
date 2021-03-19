@@ -7,18 +7,18 @@ import { port } from './config/environment.js'
 import connectToMockDatabase from './lib/connectToMockDb.js'
 
 const app = express()
-const isTest = () => process.env.NODE_ENV === 'test'
 
 async function startServer() {
+  const isTest = process.env.NODE_ENV === undefined
+  const databaseName = isTest ? 'Mock database' : 'Database'
   try {
     if (isTest) {
       await connectToMockDatabase()
-      console.log('🤖 MOCK Database has connected')
     } else {
       await connectToDatabase()
-      console.log('🤖 Database has connected')
     }
-
+    
+    console.log(`🤖 ${databaseName} has connected`)
 
     app.use(express.json())
 
