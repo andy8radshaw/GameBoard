@@ -7,16 +7,15 @@ import app from '../../../index.js'
 
 let token
 
-
-describe('User -------------', () => {
-
-  describe('GET /profiles', () => { 
+describe('User -----------------------', () => {
+  describe('GET /profiles', () => {
 
     before(async () => {
-      await request(app).post('/api/login')
+      await request(app).post('/api/register')
         .send({ 
-          email: 'andy@email.com',
-          password: 'password'
+          email: 'test@email.com',
+          password: 'password',
+          passwordConfirmation: 'password'
         })
         .then((res) => {
           token = res.body.token
@@ -38,7 +37,7 @@ describe('User -------------', () => {
         .set('Authorization', 'Bearer ' + token)
         .then((res) => {
           const body = res.body
-          expect(body.length).to.equal(6)
+          expect(body.length).to.equal(1)
           expect(res.status).to.equal(200)
         })
     })
@@ -52,5 +51,6 @@ describe('User -------------', () => {
           expect(user).to.have.property('id')
         })
     })
+    
   })
 }) 

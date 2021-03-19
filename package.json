@@ -20,10 +20,9 @@
     "supertest": "^6.1.3"
   },
   "scripts": {
-    "dev": "nodemon",
     "seed": "node db/seeds.js",
     "test": "mocha --recursive --exit",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "build": "cd client && yarn && yarn build"
   }
 }

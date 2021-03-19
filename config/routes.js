@@ -11,7 +11,7 @@ router.route('/myprofile')
   .get(secureRoute, users.userProfile)
 
 router.route('/profiles')
-  .get(secureRoute, users.getAllUsers)
+  .get(users.getAllUsers)
 
 router.route('/profiles/:id')
   .get(secureRoute, users.getSingleUser)
