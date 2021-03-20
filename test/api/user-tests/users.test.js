@@ -2,21 +2,27 @@
 import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../index.js'
+import { testUserOne, testUserTwo } from '../../testVariables.js'
 
-let token
-let userId
-
-describe('User -----------------------', () => {
-
+describe('User -----------------------', function() {
+  this.timeout(0)
   before(async () => {
-    await request(app).post('/api/register')
+    await request(app).post('/api/login')
       .send({ 
-        email: 'test@email.com',
-        password: 'password',
-        passwordConfirmation: 'password'
+        email: testUserOne.email,
+        password: testUserOne.password
       })
       .then((res) => {
-        token = res.body.token
+        testUserOne.token = res.body.token
+      })
+    await request(app).post('/api/register')
+      .send({ 
+        email: testUserTwo.email,
+        password: testUserTwo.password,
+        passwordConfirmation: testUserTwo.passwordConfirmation
+      })
+      .then((res) => {
+        testUserTwo.token = res.body.token
       })
   })
 
@@ -24,17 +30,17 @@ describe('User -----------------------', () => {
 
     it('Returns an object', async () => {
       await request(app).get('/api/myprofile')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const user = res.body
-          userId = user.id
+          testUserOne.id = user.id
           expect(user).to.be.an('object')
         })
     })
 
     it('Returns an object with the correct properties', async () => {
       await request(app).get('/api/myprofile')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const user = res.body
           expect(user).to.have.property('email')
@@ -44,10 +50,10 @@ describe('User -----------------------', () => {
 
     it('Returns the correct email for test account', async () => {
       await request(app).get('/api/myprofile')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const user = res.body
-          expect(user.email).to.equal('test@email.com')
+          expect(user.email).to.equal('testuserone@email.com')
         })
     })
 
@@ -57,7 +63,7 @@ describe('User -----------------------', () => {
 
     it('Returns an array', async () => {
       await request(app).get('/api/profiles')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then(res => {
           const body = res.body
           expect(body).to.be.an('array')
@@ -67,17 +73,17 @@ describe('User -----------------------', () => {
 
     it('Returns an array of the correct length', async () => {
       await request(app).get('/api/profiles')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const body = res.body
-          expect(body.length).to.equal(1)
+          expect(body.length).to.equal(2)
           expect(res.status).to.equal(200)
         })
     })
 
     it('Returns objects with the correct properties', async () => {
       await request(app).get('/api/profiles')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const user = res.body[0]
           expect(user).to.have.property('email')
@@ -86,14 +92,33 @@ describe('User -----------------------', () => {
     })
   })
 
-  describe('--- GET /profiles/:id (a single user) ', () => {
+  describe('--- GET /profiles/:id (a single user)', () => {
 
     it('Returns an object', async () => {
-      await request(app).get(`/api/profiles/${userId}`)
-        .set('Authorization', 'Bearer ' + token)
+      await request(app).get(`/api/profiles/${testUserOne.id}`)
+        .set('Authorization', 'Bearer ' + testUserTwo.token)
         .then((res) => {
           const user = res.body
           expect(user).to.be.an('object')
+        })
+    })
+
+    it('Returns an object with the correct properties', async () => {
+      await request(app).get(`/api/profiles/${testUserOne.id}`)
+        .set('Authorization', 'Bearer ' + testUserTwo.token)
+        .then((res) => {
+          const user = res.body
+          expect(user).to.have.property('email')
+          expect(user).to.have.property('id')
+        })
+    })
+
+    it('Returns the correct email for testUserOne', async () => {
+      await request(app).get(`/api/profiles/${testUserOne.id}`)
+        .set('Authorization', 'Bearer ' + testUserTwo.token)
+        .then((res) => {
+          const user = res.body
+          expect(user.email).to.equal('testuserone@email.com')
         })
     })
   })

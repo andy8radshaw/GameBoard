@@ -1,5 +1,5 @@
 import express from 'express'
-// import logger from './lib/logger.js'
+import logger from './lib/logger.js'
 import router from './config/routes.js'
 import errorHandler from './lib/errorHandler.js'
 import connectToDatabase from './lib/connectToDb.js'
@@ -22,7 +22,7 @@ async function startServer() {
 
     app.use(express.json())
 
-    // app.use(logger)
+    if (!isTest) app.use(logger)
 
     app.use('/api', router)
 

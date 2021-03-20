@@ -1,62 +1,66 @@
 /* eslint-disable no-undef */
-// import request from 'supertest'
-// import database from '../../testEnv.js'
-// // import register from '../../../controllers/auth.js'
-// import app from '../../../index.js'
-// import { expect } from 'chai'
+import { expect } from 'chai'
+import request from 'supertest'
+import app from '../../../index.js'
+import { testUserOne } from '../../testVariables.js'
 
-// function sayHello(name = 'world') {
-//   return `hello ${name}`
-// }
+describe('Auth -----------------------', () => {
 
-// describe('test the tests with sayHello 2', () => {
+  describe('--- POST /register (registers a new user)', () => {
 
-//   it('returns a string', () => {
-//     expect(sayHello('andy')).to.be.a('string')
-//   })
+    it('Fails to register a new user with mismatched passwords', async () => {
+      await request(app).post('/api/register')
+        .send({
+          email: testUserOne.email,
+          password: testUserOne.password,
+          passwordConfirmation: 'wrongpassword'
+        })
+        .then((res) => {
+          expect(res.body.message).to.equal('User validation failed: passwordConfirmation: does not match')
+        })
+    })
 
-//   it('returns hello andy', () => {
-//     expect(sayHello('andy')).to.equal('hello andy')
-//   })
+    it('Registers a new user and returns message and token', async () => {
+      await request(app).post('/api/register')
+        .send({ 
+          email: testUserOne.email,
+          password: testUserOne.password,
+          passwordConfirmation: testUserOne.passwordConfirmation
+        })
+        .then((res) => {
+          expect(res.body).to.be.an('object')
+          expect(res.body).to.have.property('message')
+          expect(res.body).to.have.property('token')
+        })
+    })
 
-//   it('returns hello world if no name passed as argument', () => {
-//     expect(sayHello()).to.equal('hello world')
-//   })
+  })
 
-//   it('fails', () => {
-//     expect(sayHello()).to.not.equal('hello andy')
-//   })
-// })
+  describe('--- POST /login (log in existing user', () => {
 
-// describe('Registering a User', () => {
+    it('Fails to log user in when incorrect password', async () => {
+      await request(app).post('/api/login')
+        .send({
+          email: testUserOne.email,
+          password: 'wrongpassword'
+        })
+        .then((res) => {
+          expect(res.body.message).to.equal('Unauthorized')
+        })
+    })
 
-//   before(done => {
-//     database.connectToMockDatabase()
-//       .then(() => done())
-//       .catch(err => done(err))
-//   })
+    it('Logs in user when correct details given', async () => {
+      await request(app).post('/api/login')
+        .send({
+          email: testUserOne.email,
+          password: testUserOne.password
+        })
+        .then((res) => {
+          expect(res.body).to.be.an('object')
+          expect(res.body.message).to.equal('Welcome back testuserone@email.com 🧩')
+          expect(res.body).to.have.property('token')
+        })
+    })
 
-//   after(done => {
-//     database.closeMockDatabase()
-//       .then(() => done())
-//       .catch(err => done(err))
-//   })
-  
-//   it('registers a new user', (done) => {
-//     request(app).post('/register')
-//       .send({
-//         email: 'andy@email.com',
-//         password: 'password',
-//         passwordConfirmation: 'password'
-//       })
-//       .then(res => {
-//         const body = res.body
-//         expect(body).to.contain.property('message')
-//         expect(body).to.contain.property('token')
-//       })
-//       .then(() => done())
-//       .catch(err => done(err))
-//   })
-
-// })
-
+  })
+})
