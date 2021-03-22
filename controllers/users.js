@@ -1,5 +1,5 @@
 import User from '../models/user.js'
-import { notFound } from '../lib/errorMessages.js'
+import { notFound } from '../lib/errorHandler.js'
 
 async function userProfile(req, res, next) {
   try {
