@@ -2,9 +2,28 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import uniqueValidator from 'mongoose-unique-validator'
 
+const friendRequestSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+})
+
+const acceptedFriendSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+})
+
+const rejectedFriendSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+})
+
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  username: { type: String, unique: true },
+  profileImage: { type: String, unique: true },
+  isPrivate: { type: Boolean, default: false },
+  memberSince: { type: Date, default: Date.now() },
+  friendRequests: [friendRequestSchema],
+  friends: [acceptedFriendSchema],
+  rejectedFriends: [rejectedFriendSchema]
 })
 
 // ensures password doesn't show up on the users details
