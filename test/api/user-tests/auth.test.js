@@ -2,7 +2,7 @@
 import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../index.js'
-import { testUserOne } from '../../testVariables.js'
+import { testUserOne, testUserTwo } from '../../testVariables.js'
 
 describe('Auth -----------------------', () => {
 
@@ -25,9 +25,27 @@ describe('Auth -----------------------', () => {
         .send({ 
           email: testUserOne.email,
           password: testUserOne.password,
-          passwordConfirmation: testUserOne.passwordConfirmation
+          passwordConfirmation: testUserOne.passwordConfirmation,
+          username: testUserOne.username
         })
         .then((res) => {
+          testUserOne.token = res.body.token
+          expect(res.body).to.be.an('object')
+          expect(res.body).to.have.property('message')
+          expect(res.body).to.have.property('token')
+        })
+    })
+
+    it('Registers a second user and returns message and token', async () => {
+      await request(app).post('/api/register')
+        .send({ 
+          email: testUserTwo.email,
+          password: testUserTwo.password,
+          passwordConfirmation: testUserTwo.passwordConfirmation,
+          username: testUserTwo.username
+        })
+        .then((res) => {
+          testUserTwo.token = res.body.token
           expect(res.body).to.be.an('object')
           expect(res.body).to.have.property('message')
           expect(res.body).to.have.property('token')

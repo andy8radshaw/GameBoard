@@ -5,26 +5,6 @@ import app from '../../../index.js'
 import { testUserOne, testUserTwo } from '../../testVariables.js'
 
 describe('User -----------------------', function() {
-  this.timeout(0)
-  before(async () => {
-    await request(app).post('/api/login')
-      .send({ 
-        email: testUserOne.email,
-        password: testUserOne.password
-      })
-      .then((res) => {
-        testUserOne.token = res.body.token
-      })
-    await request(app).post('/api/register')
-      .send({ 
-        email: testUserTwo.email,
-        password: testUserTwo.password,
-        passwordConfirmation: testUserTwo.passwordConfirmation
-      })
-      .then((res) => {
-        testUserTwo.token = res.body.token
-      })
-  })
 
   describe('--- GET /myprofile (Logged in users profile)', () => {
 
@@ -45,6 +25,9 @@ describe('User -----------------------', function() {
           const user = res.body
           expect(user).to.have.property('email')
           expect(user).to.have.property('id')
+          expect(user).to.have.property('friends')
+          expect(user).to.have.property('friendRequests')
+          expect(user).to.have.property('rejectedFriends')
         })
     })
 
