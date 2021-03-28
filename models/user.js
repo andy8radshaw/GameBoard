@@ -18,12 +18,13 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   username: { type: String, unique: true },
-  profileImage: { type: String, unique: true },
+  profileImage: { type: String },
   isPrivate: { type: Boolean, default: false },
-  memberSince: { type: Date, default: Date.now() },
   friendRequests: [friendRequestSchema],
   friends: [acceptedFriendSchema],
   rejectedFriends: [rejectedFriendSchema]
+}, {
+  timestamps: true
 })
 
 // ensures password doesn't show up on the users details
