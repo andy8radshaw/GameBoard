@@ -6,7 +6,6 @@ import { testUserOne, testUserTwo } from '../../testVariables.js'
 
 describe('User -----------------------', function() {
 
-
   describe('--- GET /myprofile (Logged in users profile)', () => {
 
     it('Returns an object', async () => {
