@@ -5,8 +5,7 @@ import users from '../controllers/users.js'
 
 const router = express.Router()
 
-// ? User/Authentication routes
-
+// User/Authentication routes
 router.route('/myprofile')
   .get(secureRoute, users.userProfile)
 
@@ -15,6 +14,7 @@ router.route('/profiles')
 
 router.route('/profiles/:id')
   .get(secureRoute, users.getSingleUser)
+  .put(secureRoute, users.userUpdate)
 
 router.route('/register')
   .post(auth.register)
