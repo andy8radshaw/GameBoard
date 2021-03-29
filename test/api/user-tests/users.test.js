@@ -71,6 +71,9 @@ describe('User -----------------------', function() {
           const user = res.body[0]
           expect(user).to.have.property('email')
           expect(user).to.have.property('id')
+          expect(user).to.have.property('friends')
+          expect(user).to.have.property('friendRequests')
+          expect(user).to.have.property('rejectedFriends')
         })
     })
   })
@@ -93,6 +96,9 @@ describe('User -----------------------', function() {
           const user = res.body
           expect(user).to.have.property('email')
           expect(user).to.have.property('id')
+          expect(user).to.have.property('friends')
+          expect(user).to.have.property('friendRequests')
+          expect(user).to.have.property('rejectedFriends')
         })
     })
 
@@ -104,5 +110,61 @@ describe('User -----------------------', function() {
           expect(user.email).to.equal('testuserone@email.com')
         })
     })
+  })
+
+  describe('--- PUT /profiles/:id (updateUser)', () => {
+
+    it('fails to update if incorrect userId given', async () => {
+      await request(app).put('/api/profiles/123')
+        .set('Authorization', 'Bearer ' + testUserOne.token)
+        .send({
+          username: 'newUsername',
+          isPrivate: true
+        })
+        .then((res) => {
+          expect(res.body.message).to.equal('Not Found')
+        })
+    })
+
+    it('fails to update if no token given (user not logged in)', async () => {
+      await request(app).put(`/api/profiles/${testUserOne.id}`)
+        .send({
+          username: 'newUsername',
+          isPrivate: true
+        })
+        .then((res) => {
+          expect(res.body.message).to.equal('Unauthorized')
+        })
+    })
+
+    it('fails to update a different user than the current logged in', async () => {
+      await request(app).put(`/api/profiles/${testUserOne.id}`)
+        .set('Authorization', 'Bearer ' + testUserTwo.token)
+        .send({
+          username: 'newUsername',
+          isPrivate: true
+        })
+        .then((res) => {
+          expect(res.body.message).to.equal('Unauthorized')
+        })
+    })
+
+    it('updates the current logged in user correctly', async () => {
+      await request(app).put(`/api/profiles/${testUserOne.id}`)
+        .set('Authorization', 'Bearer ' + testUserOne.token)
+        .send({
+          username: 'newUsername',
+          isPrivate: true,
+          profileImage: 'awesome profile image URL'
+        })
+        .then((res) => {
+          const user = res.body
+          expect(user.isPrivate).to.equal(true)
+          expect(user.username).to.equal('newUsername')
+          expect(user.email).to.equal('testuserone@email.com')
+          expect(user.profileImage).to.equal('awesome profile image URL')
+        })
+    })
+
   })
 }) 
