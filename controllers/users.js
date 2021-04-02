@@ -1,5 +1,11 @@
 import User from '../models/user.js'
-import { notFound, unauthorized } from '../lib/errorHandler.js'
+import { 
+  awaitingUserResponse,
+  notFound, 
+  alreadyAdded, 
+  previouslyDenied, 
+  unauthorized
+} from '../lib/errorHandler.js'
 
 async function userProfile(req, res, next) {
   try {
@@ -23,7 +29,7 @@ async function getAllUsers(_req, res, next) {
 async function getSingleUser(req, res, next) {
   const userId = req.params.id
   try {
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).populate('rejectedFriends.user')
     if (!user) throw new Error(notFound)
     return res.status(200).json(user)
   } catch (err) {
@@ -45,9 +51,28 @@ async function userUpdate(req, res, next) {
   }
 }
 
+async function requestFriend(req, res, next) {
+  const requestedUserID = req.params.id
+  const currentUserId = req.currentUser._id
+  try {
+    req.body.user = req.currentUser
+    const userToRequest = await User.findById(requestedUserID).populate('user')
+    if (!userToRequest) throw new Error(notFound)
+    if (userToRequest.friends.some( user => user.user._id.equals(currentUserId))) throw new Error(alreadyAdded)
+    if (userToRequest.friendRequests.some( user => user.user._id.equals(currentUserId))) throw new Error(awaitingUserResponse)
+    if (userToRequest.rejectedFriends.some( user => user.user._id.equals(currentUserId))) throw new Error(previouslyDenied)
+    userToRequest.friendRequests.push(req.body)
+    await userToRequest.save()
+    res.status(201).json(userToRequest)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export default {
   userProfile,
   getAllUsers,
   getSingleUser,
-  userUpdate
+  userUpdate,
+  requestFriend
 }
