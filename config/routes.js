@@ -19,6 +19,9 @@ router.route('/profiles/:id')
 router.route('/friend-request/:id')
   .put(secureRoute, users.requestFriend)
 
+router.route('/friends/:id')
+  .put(secureRoute, users.acceptFriend)
+
 router.route('/register')
   .post(auth.register)
 
