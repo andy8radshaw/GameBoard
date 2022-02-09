@@ -19,6 +19,10 @@ const rejectedFriendSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
 })
 
+const blockedUserSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
+})
+
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
   password: { type: String, required: true },
@@ -27,7 +31,8 @@ const userSchema = new mongoose.Schema({
   isPrivate: { type: Boolean, default: false },
   friendRequests: [friendRequestSchema],
   friends: [acceptedFriendSchema],
-  rejectedFriends: [rejectedFriendSchema]
+  rejectedFriends: [rejectedFriendSchema],
+  blockedUsers: [blockedUserSchema]
 }, {
   timestamps: true
 })

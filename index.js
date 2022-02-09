@@ -17,7 +17,7 @@ async function startServer() {
     } else {
       await connectToDatabase()
     }
-    
+
     console.log(`🤖 ${databaseName} has connected`)
 
     app.use(express.json())
