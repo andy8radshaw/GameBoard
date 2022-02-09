@@ -47,4 +47,10 @@ router.route('/block-user/:id')
 router.route('/unblock-user/:id')
   .put(secureRoute, users.unblockUser)
 
+router.route('/saved-games/add/:id')
+  .put(secureRoute, users.addSavedGame)
+
+router.route('/saved-games/remove/:id')
+  .put(secureRoute, users.removeSavedGame)
+
 export default router

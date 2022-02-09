@@ -52,6 +52,8 @@ async function userUpdate(req, res, next) {
   }
 }
 
+// Friend Requests...
+
 async function getFriendRequests(req, res, next) {
   try {
     const user = await User.findById(req.currentUser._id).populate('friendRequests.user')
@@ -128,22 +130,6 @@ async function declineFriendRequest(req, res, next) {
   }
 }
 
-async function updateRejectedFriends(req, res, next) {
-  const currentUserId = req.currentUser._id
-  const selectedUserId = req.params.id
-  try {
-    const currentUser = await User.findById(currentUserId)
-    const selectedUser = await User.findById(selectedUserId)
-    if (!currentUser || !selectedUser) throw new Error(notFound)
-    if (!currentUser.rejectedFriends.some(friend => friend.user._id.equals(selectedUserId))) throw new Error(notFound)
-    currentUser.rejectedFriends = currentUser.rejectedFriends.filter(friend => !friend.user._id.equals(selectedUserId))
-    await currentUser.save()
-    res.status(200).json(currentUser)
-  } catch (err) {
-    next(err)
-  }
-}
-
 async function removeFriend(req, res, next) {
   const currentUserId = req.currentUser._id
   const userToRemoveId = req.params.id
@@ -157,6 +143,22 @@ async function removeFriend(req, res, next) {
     userToRemove.friends = userToRemove.friends.filter(friend => !friend.user._id.equals(currentUserId))
     await userToRemove.save()
     return res.status(200).json(currentUser)
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function updateRejectedFriends(req, res, next) {
+  const currentUserId = req.currentUser._id
+  const selectedUserId = req.params.id
+  try {
+    const currentUser = await User.findById(currentUserId)
+    const selectedUser = await User.findById(selectedUserId)
+    if (!currentUser || !selectedUser) throw new Error(notFound)
+    if (!currentUser.rejectedFriends.some(friend => friend.user._id.equals(selectedUserId))) throw new Error(notFound)
+    currentUser.rejectedFriends = currentUser.rejectedFriends.filter(friend => !friend.user._id.equals(selectedUserId))
+    await currentUser.save()
+    res.status(200).json(currentUser)
   } catch (err) {
     next(err)
   }
@@ -197,7 +199,36 @@ async function unblockUser(req, res, next) {
   }
 }
 
-// async function blockUser(req, res, next)
+// Board Game controllers
+
+async function addSavedGame(req, res, next) {
+  try {
+    const user = await User.findById(req.currentUser._id)
+    const gameId = req.params.id
+    if (!user) throw new Error(notFound)
+    if (user.savedGames.some(game => game === gameId)) throw new Error(alreadyAdded)
+    user.savedGames.push(gameId)
+    user.save()
+    res.status(200).json(user)
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function removeSavedGame(req, res, next) {
+  try {
+    const user = await User.findById(req.currentUser._id)
+    const gameId = req.params.id
+    if (!user) throw new Error(notFound)
+    if (!user.savedGames.some(game => game === gameId)) throw new Error(notFound)
+    user.savedGames = user.savedGames.filter(game => game !== gameId)
+    user.save()
+    res.status(200).json(user)
+  } catch (err) {
+    next(err)
+  }
+}
+
 
 export default {
   userProfile,
@@ -211,5 +242,7 @@ export default {
   updateRejectedFriends,
   removeFriend,
   blockUser,
-  unblockUser
+  unblockUser,
+  addSavedGame,
+  removeSavedGame
 }

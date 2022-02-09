@@ -1,10 +1,10 @@
 {
   "workbench.colorTheme": "Default Dark+",
   "workbench.colorCustomizations": {
-    "statusBar.background": "#ffd23f",
+    "statusBar.background": "#ffe796",
     "statusBar.foreground": "#000000",
-    "titleBar.activeBackground": "#ffd23f",
-    "titleBar.inactiveBackground": "#ffd23f",
+    "titleBar.activeBackground": "#ffe796",
+    "titleBar.inactiveBackground": "#ffe796",
     "titleBar.activeForeground": "#000000"
   },
   "window.title": "GameBoard - BE",

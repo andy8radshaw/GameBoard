@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema({
   friendRequests: [friendRequestSchema],
   friends: [acceptedFriendSchema],
   rejectedFriends: [rejectedFriendSchema],
-  blockedUsers: [blockedUserSchema]
+  blockedUsers: [blockedUserSchema],
+  savedGames: [{ type: String }]
 }, {
   timestamps: true
 })
