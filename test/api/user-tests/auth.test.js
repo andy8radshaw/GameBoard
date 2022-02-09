@@ -13,7 +13,8 @@ describe('Auth -----------------------', () => {
         .send({
           email: testUserOne.email,
           password: testUserOne.password,
-          passwordConfirmation: 'wrongpassword'
+          passwordConfirmation: 'wrongpassword',
+          username: testUserOne.username
         })
         .then((res) => {
           expect(res.body.message).to.equal('User validation failed: passwordConfirmation: does not match')

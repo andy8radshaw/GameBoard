@@ -3,26 +3,36 @@ import bcrypt from 'bcrypt'
 import uniqueValidator from 'mongoose-unique-validator'
 
 const friendRequestSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+  user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
+  message: { type: String, maxlength: 300 }
+}, {
+  timestamps: true
 })
 
 const acceptedFriendSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+  user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
+}, {
+  timestamps: true
 })
 
 const rejectedFriendSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.ObjectId, ref: 'User' }
+  user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
+})
+
+const blockedUserSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
 })
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
   password: { type: String, required: true },
-  username: { type: String, unique: true },
+  username: { type: String, required: true, unique: true, uniqueCaseInsensitive: true },
   profileImage: { type: String },
   isPrivate: { type: Boolean, default: false },
   friendRequests: [friendRequestSchema],
   friends: [acceptedFriendSchema],
-  rejectedFriends: [rejectedFriendSchema]
+  rejectedFriends: [rejectedFriendSchema],
+  blockedUsers: [blockedUserSchema]
 }, {
   timestamps: true
 })
