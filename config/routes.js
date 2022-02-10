@@ -13,44 +13,48 @@ router.route('/register')
 router.route('/login')
   .post(auth.login)
 
+// /myprofile
+
 router.route('/myprofile')
   .get(secureRoute, users.userProfile)
 
-router.route('/profiles')
+router.route('/myprofile/friend-requests')
+  .get(secureRoute, users.getFriendRequests)
+
+router.route('/myprofile/friends/remove/:id')
+  .put(secureRoute, users.removeFriend)
+
+router.route('/myprofile/saved-games/add/:id')
+  .put(secureRoute, users.addSavedGame)
+
+router.route('/myprofile/saved-games/remove/:id')
+  .put(secureRoute, users.removeSavedGame)
+
+router.route('/myprofile/update-rejected/:id')
+  .put(secureRoute, users.updateRejectedFriends)
+
+// /users
+
+router.route('/users')
   .get(secureRoute, users.getAllUsers)
 
-router.route('/profiles/:id')
+router.route('/users/:id')
   .get(secureRoute, users.getSingleUser)
   .put(secureRoute, users.userUpdate)
 
-router.route('/friend-requests')
-  .get(secureRoute, users.getFriendRequests)
-
-router.route('/friend-requests/:id')
+router.route('/users/add/:id')
   .put(secureRoute, users.requestFriend)
 
-router.route('/friends/:id')
+router.route('/users/accept/:id')
   .put(secureRoute, users.acceptFriendRequest)
 
-router.route('/friend-remove/:id')
-  .put(secureRoute, users.removeFriend)
-
-router.route('/friend-decline/:id')
+router.route('/users/decline/:id')
   .put(secureRoute, users.declineFriendRequest)
 
-router.route('/friends-rejected/:id')
-  .put(secureRoute, users.updateRejectedFriends)
-
-router.route('/block-user/:id')
+router.route('/users/block/:id')
   .put(secureRoute, users.blockUser)
 
-router.route('/unblock-user/:id')
+router.route('/users/unblock/:id')
   .put(secureRoute, users.unblockUser)
-
-router.route('/saved-games/add/:id')
-  .put(secureRoute, users.addSavedGame)
-
-router.route('/saved-games/remove/:id')
-  .put(secureRoute, users.removeSavedGame)
 
 export default router

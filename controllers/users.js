@@ -66,8 +66,8 @@ async function getFriendRequests(req, res, next) {
 }
 
 async function requestFriend(req, res, next) {
-  const requestedUserID = req.params.id
   const currentUserId = req.currentUser._id
+  const requestedUserID = req.params.id
   try {
     req.body.user = req.currentUser
     const userToRequest = await User.findById(requestedUserID)
@@ -77,6 +77,25 @@ async function requestFriend(req, res, next) {
     if (userToRequest.rejectedFriends.some(request => request.user._id.equals(currentUserId))) throw new Error(previouslyDenied)
     if (userToRequest.blockedUsers.some(request => request.user._id.equals(currentUserId))) throw new Error(forbidden)
     userToRequest.friendRequests.push(req.body)
+    await userToRequest.save()
+    res.status(201).json(userToRequest)
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function cancelFriendRequest(req, res, next) {
+  const currentUserId = req.currentUser._id
+  const requestedUserID = req.params.id
+  try {
+    req.body.user = req.currentUser
+    const userToRequest = await User.findById(requestedUserID)
+    if (!userToRequest) throw new Error(notFound)
+    if (userToRequest.friends.some( request => request.user._id.equals(currentUserId))) throw new Error(alreadyAdded)
+    if (userToRequest.rejectedFriends.some(request => request.user._id.equals(currentUserId))) throw new Error(previouslyDenied)
+    if (userToRequest.blockedUsers.some(request => request.user._id.equals(currentUserId))) throw new Error(forbidden)
+    if (!userToRequest.friendRequests.some(request => request.user._id.equals(currentUserId))) throw new Error(notFound)
+    userToRequest.friendRequests = userToRequest.friendRequests.filter(request => !request.user._id.equals(currentUserId))
     await userToRequest.save()
     res.status(201).json(userToRequest)
   } catch (err) {
@@ -175,6 +194,8 @@ async function blockUser(req, res, next) {
     if (userToBlock.blockedUsers.some(user => user.user._id.equals(currentUserId))) throw new Error(forbidden)
     req.body.user = userToBlockId
     currentUser.blockedUsers.push(req.body)
+    // ! CHECK ALL LISTS AND IF USERTOBLOCK IS IN THEM, REMOVE FROM SAID LIST HERE ______________________________
+    // ! also check if blocked user has current user in any lists and remove
     await currentUser.save()
     res.status(200).json(currentUser)
   } catch (err) {
@@ -237,6 +258,7 @@ export default {
   userUpdate,
   getFriendRequests,
   requestFriend,
+  cancelFriendRequest,
   acceptFriendRequest,
   declineFriendRequest,
   updateRejectedFriends,
