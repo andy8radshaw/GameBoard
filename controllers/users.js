@@ -7,6 +7,7 @@ import {
   unauthorized,
   forbidden
 } from '../lib/errorHandler.js'
+import user from '../models/user.js'
 
 async function userProfile(req, res, next) {
   try {
@@ -194,9 +195,14 @@ async function blockUser(req, res, next) {
     if (userToBlock.blockedUsers.some(user => user.user._id.equals(currentUserId))) throw new Error(forbidden)
     req.body.user = userToBlockId
     currentUser.blockedUsers.push(req.body)
-    // ! CHECK ALL LISTS AND IF USERTOBLOCK IS IN THEM, REMOVE FROM SAID LIST HERE ______________________________
-    // ! also check if blocked user has current user in any lists and remove
+    currentUser.friends = currentUser.friends.filter(friend => !friend.user._id.equals(userToBlockId))
+    currentUser.friendRequests = currentUser.friendRequests.filter(friend => !friend.user._id.equals(userToBlockId))
+    currentUser.rejectedFriends = currentUser.rejectedFriends.filter(friend => !friend.user._id.equals(userToBlockId))
     await currentUser.save()
+    userToBlock.friends = userToBlock.friends.filter(friend => !friend.user._id.equals(currentUserId))
+    userToBlock.friendRequests = userToBlock.friendRequests.filter(friend => !friend.user._id.equals(currentUserId))
+    userToBlock.rejectedFriends = userToBlock.rejectedFriends.filter(friend => !friend.user._id.equals(currentUserId))
+    await userToBlock.save()
     res.status(200).json(currentUser)
   } catch (err) {
     next(err)

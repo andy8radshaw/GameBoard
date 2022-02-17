@@ -21,6 +21,9 @@ router.route('/myprofile')
 router.route('/myprofile/friend-requests')
   .get(secureRoute, users.getFriendRequests)
 
+router.route('/myprofile/friend-requests/:id')
+  .put(secureRoute, users.requestFriend)
+
 router.route('/myprofile/friends/remove/:id')
   .put(secureRoute, users.removeFriend)
 
@@ -41,9 +44,6 @@ router.route('/users')
 router.route('/users/:id')
   .get(secureRoute, users.getSingleUser)
   .put(secureRoute, users.userUpdate)
-
-router.route('/users/add/:id')
-  .put(secureRoute, users.requestFriend)
 
 router.route('/users/accept/:id')
   .put(secureRoute, users.acceptFriendRequest)
