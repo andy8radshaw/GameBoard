@@ -45,7 +45,7 @@ describe('User -----------------------', function() {
   describe('--- GET /profiles (userIndex)', () => {
 
     it('Returns an array', async () => {
-      await request(app).get('/api/profiles')
+      await request(app).get('/api/users')
         .set('Authorization', 'Bearer ' + testUserOne.token)
         .then(res => {
           const body = res.body
@@ -55,7 +55,7 @@ describe('User -----------------------', function() {
     })
 
     it('Returns an array of the correct length', async () => {
-      await request(app).get('/api/profiles')
+      await request(app).get('/api/users')
         .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const body = res.body
@@ -65,7 +65,7 @@ describe('User -----------------------', function() {
     })
 
     it('Returns objects with the correct properties', async () => {
-      await request(app).get('/api/profiles')
+      await request(app).get('/api/users')
         .set('Authorization', 'Bearer ' + testUserOne.token)
         .then((res) => {
           const user = res.body[0]
@@ -81,7 +81,7 @@ describe('User -----------------------', function() {
   describe('--- GET /profiles/:id (a single user)', () => {
 
     it('Returns an object', async () => {
-      await request(app).get(`/api/profiles/${testUserOne.id}`)
+      await request(app).get(`/api/users/${testUserOne.id}`)
         .set('Authorization', 'Bearer ' + testUserTwo.token)
         .then((res) => {
           const user = res.body
@@ -90,7 +90,7 @@ describe('User -----------------------', function() {
     })
 
     it('Returns an object with the correct properties', async () => {
-      await request(app).get(`/api/profiles/${testUserOne.id}`)
+      await request(app).get(`/api/users/${testUserOne.id}`)
         .set('Authorization', 'Bearer ' + testUserTwo.token)
         .then((res) => {
           const user = res.body
@@ -103,7 +103,7 @@ describe('User -----------------------', function() {
     })
 
     it('Returns the correct email for testUserOne', async () => {
-      await request(app).get(`/api/profiles/${testUserOne.id}`)
+      await request(app).get(`/api/users/${testUserOne.id}`)
         .set('Authorization', 'Bearer ' + testUserTwo.token)
         .then((res) => {
           const user = res.body
@@ -115,7 +115,7 @@ describe('User -----------------------', function() {
   describe('--- PUT /profiles/:id (updateUser)', () => {
 
     it('fails to update if incorrect userId given', async () => {
-      await request(app).put('/api/profiles/123')
+      await request(app).put('/api/users/123')
         .set('Authorization', 'Bearer ' + testUserOne.token)
         .send({
           username: 'newUsername',
@@ -127,7 +127,7 @@ describe('User -----------------------', function() {
     })
 
     it('fails to update if no token given (user not logged in)', async () => {
-      await request(app).put(`/api/profiles/${testUserOne.id}`)
+      await request(app).put(`/api/users/${testUserOne.id}`)
         .send({
           username: 'newUsername',
           isPrivate: true
@@ -138,7 +138,7 @@ describe('User -----------------------', function() {
     })
 
     it('fails to update a different user than the current logged in', async () => {
-      await request(app).put(`/api/profiles/${testUserOne.id}`)
+      await request(app).put(`/api/users/${testUserOne.id}`)
         .set('Authorization', 'Bearer ' + testUserTwo.token)
         .send({
           username: 'newUsername',
@@ -150,7 +150,7 @@ describe('User -----------------------', function() {
     })
 
     it('updates the current logged in user correctly', async () => {
-      await request(app).put(`/api/profiles/${testUserOne.id}`)
+      await request(app).put(`/api/users/${testUserOne.id}`)
         .set('Authorization', 'Bearer ' + testUserOne.token)
         .send({
           username: 'newUsername',

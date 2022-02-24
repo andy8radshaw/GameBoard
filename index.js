@@ -12,11 +12,7 @@ async function startServer() {
   const isTest = process.env.NODE_ENV === undefined
   const databaseName = isTest ? 'Mock database' : 'Database'
   try {
-    if (isTest) {
-      await connectToMockDatabase()
-    } else {
-      await connectToDatabase()
-    }
+    isTest ? await connectToMockDatabase() : await connectToDatabase()
 
     console.log(`🤖 ${databaseName} has connected`)
 
